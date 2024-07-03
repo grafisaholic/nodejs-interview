@@ -1,0 +1,48 @@
+extends ../index
+  
+block add_content
+  h1 Tambah Data Book
+
+  form(action="")#formBooks
+    div
+      label(for="") Title :
+      input#f-title(type="text" required) 
+    div
+      label(for="") ISBN :
+      input#f-isbn(type="text" required) 
+    div
+      label(for="") Published At :
+      input#f-published(type="date" required) 
+    div
+      label(for="") Author :
+      select#f-author(name="")
+        each a in authors
+          option(value=a._id)= a.name  
+    div
+      input(type="submit", value="Simpan")
+
+block add_script
+  script.
+    $("#formBooks").submit(function () {
+      let payload = {
+        title: $("#f-title").val(),
+        isbn: $("#f-isbn").val(),
+        published: $("#f-published").val(),
+        author_id: $("#f-author").val()
+      }
+
+      $.ajax({
+          url: "/books/create",
+          type: "POST",
+          data: payload,
+          success: function(data){
+            let msg = data;
+
+            if (msg.status == 200) {
+              window.location.href = "/books"
+            }
+          }
+      });
+
+      return false
+    })

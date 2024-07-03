@@ -1,0 +1,53 @@
+extends ../index
+  
+block add_content
+  h1 Halaman books
+
+  ul
+    li 
+      a(href="/books/create") Tambah Data
+
+  table(border="1")
+    head
+      th Title 
+      th ISBN
+      th Published At
+      th Author
+      th Created At
+      th Updated At
+      th #
+    tbody
+      each book of books
+        tr
+          td=book.title 
+          td=book.isbn
+          td=book.published_at
+          td=book.author_id ? book.author_id.name : ''
+          td=book.created_at
+          td=book.updated_at ? book.updated_at : ''
+          td 
+            a(href=`/books/edit/`+book._id style="margin-right: 10px;") Edit
+            a(href="#" onCLick="deleteRow('"+book._id+"')") Delete
+
+block add_script
+  script.
+    function deleteRow(id) {
+      let c = confirm('Apakah anda yakin akan menghapus data ? ')
+
+      if (c) {
+        $.ajax({
+            url: "/books/delete",
+            type: "POST",
+            data: {
+              id
+            },
+            success: function(data){
+              let msg = data;
+
+              if (msg.status == 200) {
+                window.location.href = "/books"
+              }
+            }
+        });
+      }
+    }

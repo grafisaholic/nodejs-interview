@@ -1,0 +1,50 @@
+extends ../index
+  
+block add_content
+  h1 Edit Data Book
+
+  form(action="")#formBooks
+    input#f-id(type="hidden", value=book._id)
+    div
+      label(for="") Title :
+      input#f-title(type="text" required value=book.title) 
+    div
+      label(for="") ISBN :
+      input#f-isbn(type="text" required value=book.isbn) 
+    div
+      label(for="") Published At :
+      input#f-published(type="date" required value=book.published_at) 
+    div
+      label(for="") Author :
+      select#f-author(name="")
+        each a in authors
+          option(value=a._id selected=book.author_id.toString() == a._id.toString())= a.name  
+    div
+      input(type="submit", value="Simpan")
+
+block add_script
+  script.
+    $("#formBooks").submit(function () {
+      let payload = {
+        id: $("#f-id").val(),
+        title: $("#f-title").val(),
+        isbn: $("#f-isbn").val(),
+        published: $("#f-published").val(),
+        author_id: $("#f-author").val()
+      }
+
+      $.ajax({
+          url: "/books/update",
+          type: "POST",
+          data: payload,
+          success: function(data){
+            let msg = data;
+
+            if (msg.status == 200) {
+              window.location.href = "/books"
+            }
+          }
+      });
+
+      return false
+    })

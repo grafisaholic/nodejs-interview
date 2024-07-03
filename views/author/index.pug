@@ -1,0 +1,81 @@
+extends ../index
+  
+block add_content
+  h1 halaman author
+
+  ul
+    li 
+      a(href="/author/create") Tambah Data
+
+
+  table(border="1" )#table-author
+    head
+      th Name 
+      th Email
+      th Created At
+      th Updated At
+      th #
+    tbody
+      each author in authors
+        tr
+          td=author.name
+          td=author.email
+          td=author.created_at
+          td=author.updated_at ? author.updated_at : ''
+          td 
+            a(href=`/author/edit/`+author._id style="margin-right: 10px;") Edit
+            a(href="#" onCLick="deleteRow('"+author._id+"')") Delete
+
+block add_script
+  script.
+    //- $(function() {
+    //-   loadTableAuthor();
+    //- })
+
+    function loadTableAuthor() {
+      $.ajax({
+          url: "/author/getAll",
+          success: function(data){
+            let msg = data;
+
+            if (msg.status == 200) {
+              let d = msg.data;
+              console.log(d, d.length)
+
+              let content = '';
+              for(var i = 0; i < d.length; i++) {
+                content += '<tr>';
+                content += '<td>' + d[i].name + '</td>';
+                content += '<td>' + d[i].email + '</td>';
+                content += '<td>' + d[i].created_at + '</td>';
+                content += '<td>' + d[i].updated_at + '</td>';
+                content += '<td><a href="#" class="edit">Edit</a> <a href="#" class="delete">Delete</a></td>';
+                content += '</tr>';
+              }
+
+              $('#table-author tbody').append(content);
+            } 
+          }
+      });
+    }
+
+    function deleteRow(id) {
+      let c = confirm('Apakah anda yakin akan menghapus data ? ')
+
+      if (c) {
+        $.ajax({
+            url: "/author/delete",
+            type: "POST",
+            data: {
+              id
+            },
+            success: function(data){
+              let msg = data;
+
+              if (msg.status == 200) {
+                window.location.href = "/author"
+              }
+            }
+        });
+      }
+    }

@@ -1,0 +1,38 @@
+extends ../index
+  
+block add_content
+  h1 Tambah Data Author
+
+  form(action="")#formAuthor
+    div 
+      label(for="") Name :
+      input#f-name(type="text" required)
+    div 
+      label(for="") Email :
+      input#f-email(type="email" required)
+    div
+      input(type="submit", value="Simpan")
+
+block add_script
+  script.
+    $("#formAuthor").submit(function () {
+      let payload = {
+        name: $("#f-name").val(),
+        email: $("#f-email").val()
+      }
+
+      $.ajax({
+          url: "/author/create",
+          type: "POST",
+          data: payload,
+          success: function(data){
+            let msg = data;
+
+            if (msg.status == 200) {
+              window.location.href = "/author"
+            }
+          }
+      });
+
+      return false
+    })

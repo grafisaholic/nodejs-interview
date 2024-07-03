@@ -1,0 +1,40 @@
+extends ../index
+  
+block add_content
+  h1 Edit Data
+
+  form(action="")#formAuthor
+    input#f-id(type="hidden" value=author._id)
+    div 
+      label(for="") Name
+      input#f-name(type="text" value=author.name)
+    div 
+      label(for="") Email
+      input#f-email(type="email" value=author.email)
+    div
+      input(type="submit", value="Simpan")
+
+block add_script
+  script.
+    $("#formAuthor").submit(function () {
+      let payload = {
+        id: $("#f-id").val(),
+        name: $("#f-name").val(),
+        email: $("#f-email").val()
+      }
+
+      $.ajax({
+          url: "/author/update",
+          type: "POST",
+          data: payload,
+          success: function(data){
+            let msg = data;
+
+            if (msg.status == 200) {
+              window.location.href = "/author"
+            }
+          }
+      });
+
+      return false
+    })
